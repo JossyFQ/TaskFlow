@@ -30,91 +30,79 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   final String studentName = 'JosselynFQ';
+  static const dailyGoal = 5;
+  int completedTasks = 0;
   int pendingTasks = 3;
-  final String courseName = 'Desarrollo de aplicaciones móviles';
-  final String motivationalMessage = 'tienes pendientes';
 
-  void addTask() {
+  void _completeTask() {
+    if (pendingTasks == 0) {
+      return;
+    }
+
+    setState(() {
+      pendingTasks--;
+      if (completedTasks < dailyGoal) {
+        completedTasks++;
+      }
+    });
+  }
+
+  void _addTask() {
     setState(() {
       pendingTasks++;
     });
   }
 
-  void completeTask() {
-    if (pendingTasks == 0) return;
-    setState(() {
-      pendingTasks--;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    /*  const studentName = 'JosselynFQ';
-    const pendingTasks = 3;
-    const courseName = 'Desarrollo de aplicaciones móviles';
-    const motivationalMessage = 'tienes pendientes';*/
+    final statusMessage = pendingTasks == 0
+        ? '¡Excelente! No tienes tareas pendientes.'
+        : 'Aún tienes tareas por organizar.';
 
     return Scaffold(
       appBar: AppBar(title: const Text('TaskFlow'), centerTitle: true),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.indigo.withValues(alpha: 0.06),
-              borderRadius: BorderRadius.circular(20),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '¡Hola, $studentName!',
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(Icons.check_circle_outline, size: 56),
-                const SizedBox(height: 24),
-                Text(
-                  '¡Hola, $studentName!',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: 12),
-                Text('Bienvenido/a a $courseName.'),
-                const SizedBox(height: 12),
-                Text('Mensaje de motivación: $motivationalMessage.'),
-                const SizedBox(height: 32),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.pending_actions),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text('Tareas pendientes: $pendingTasks'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+            const SizedBox(height: 12),
+            Text(statusMessage),
+            Text('Completadas hoy: $completedTasks de $dailyGoal'),
+            const SizedBox(height: 28),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
                   children: [
-                    ElevatedButton.icon(
-                      onPressed: addTask,
-                      icon: const Icon(Icons.add),
-                      label: const Text('Agregar'),
-                    ),
+                    const Icon(Icons.pending_actions),
                     const SizedBox(width: 12),
-                    ElevatedButton.icon(
-                      onPressed: completeTask,
-                      icon: const Icon(Icons.check),
-                      label: const Text('Completar'),
-                    ),
+                    Text('Tareas pendientes: $pendingTasks'),
                   ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Wrap(
+              spacing: 12,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _addTask,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Agregar tarea'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: pendingTasks == 0 ? null : _completeTask,
+                  icon: const Icon(Icons.done),
+                  label: const Text('Completar una tarea'),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );
