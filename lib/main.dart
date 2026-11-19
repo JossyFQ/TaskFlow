@@ -59,7 +59,10 @@ Task? findTask(int? id) {
 
 final appRouter = GoRouter(
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const TaskListScreen()),
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const TaskListScreen(),
+    ),
     GoRoute(
       path: '/task/:id',
       builder: (context, state) {
@@ -82,29 +85,6 @@ class TaskFlowApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
       ),
       routerConfig: appRouter,
-    );
-  }
-}
-
-class TaskCard extends StatelessWidget {
-  const TaskCard({super.key, required this.task, this.onTap});
-
-  final Task task;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        onTap: onTap,
-        leading: Icon(
-          task.isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-          color: task.isCompleted ? Colors.green : null,
-        ),
-        title: Text(task.title),
-        subtitle: Text(task.priority + ' · ' + task.description),
-        trailing: const Icon(Icons.chevron_right),
-      ),
     );
   }
 }
@@ -155,24 +135,24 @@ class TaskDetailScreen extends StatelessWidget {
         child: selected == null
             ? const Text('No se encontró esta tarea.')
             : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    selected.title,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(selected.description),
-                  const SizedBox(height: 16),
-                  Text('Prioridad: ${selected.priority}'),
-                  Text(
-                    selected.isCompleted
-                        ? 'Estado: completada'
-                        : 'Estado: pendiente',
-                  ),
-                  Text('Usuario: ${selected.userId}'),
-                ],
-              ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              selected.title,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 16),
+            Text(selected.description),
+            const SizedBox(height: 16),
+            Text('Prioridad: ${selected.priority}'),
+            Text(
+              selected.isCompleted
+                  ? 'Estado: completada'
+                  : 'Estado: pendiente',
+            ),
+            Text('Usuario: ${selected.userId}'),
+          ],
+        ),
       ),
     );
   }
