@@ -66,3 +66,25 @@ direcciones de un servidor ya conectado.
   - `description`: `"Sin descripción (API)"` (la API remota no provee este campo).
   - `priority`: `"Sin prioridad (API)"` (la API remota no provee este campo).
 - **Persistencia de cambios:** Marcar o desmarcar una tarea como completada actualiza únicamente la copia en memoria local (`RemoteTaskRepository`). La API de prueba JSONPlaceholder no persiste cambios permanentes en el servidor remoto, por lo que al reiniciar la aplicación se volverán a cargar los datos originales del servidor.
+
+## Estados de la interfaz
+
+TaskFlow maneja cuatro estados asíncronos en la pantalla principal (`TaskListScreen`):
+
+1. **Estado de Carga (`isLoading = true`)**:
+   - **UI**: Muestra un indicador giratorio `CircularProgressIndicator` en el centro de la pantalla.
+   - **Disparador**: Se activa cuando `loadTasks()` inicia la consulta asíncrona a la API.
+
+2. **Estado de Éxito (Lista con datos)**:
+   - **UI**: Renderiza la lista de tareas con `ListView.builder` y habilita el gesto de deslizar hacia abajo (`RefreshIndicator`) y el botón de recarga en el `AppBar`.
+   - **Disparador**: Se activa cuando la respuesta HTTP devuelve datos correctamente (`statusCode == 200`).
+
+3. **Estado de Error (`errorMessage != null`)**:
+   - **UI**: Muestra el mensaje *"No se pudieron cargar las tareas."* centrado en pantalla junto a un botón **"Reintentar"**.
+   - **Cómo provocarlo**: Desactivando la conexión a internet en el dispositivo/emulador o ingresando una URL o endpoint incorrecto en Dio.
+   - **Recuperación**: Al presionar **"Reintentar"**, se invoca `context.read<TasksViewModel>().loadTasks()`. Una vez restablecida la conexión, la app recupera la lista de tareas de forma dinámica **sin necesidad de reiniciar la aplicación**.
+
+4. **Estado Vacío (`isEmpty = true`)**:
+   - **UI**: Muestra el mensaje *"Todavía no hay tareas para mostrar."* centrado junto a un botón **"Actualizar"**.
+   - **Cómo provocarlo**: Consultando un `userId` que no tenga tareas asignadas o configurando una lista vacía `[]` en el repositorio.
+   - **Recuperación**: Presionar el botón **"Actualizar"** vuelve a consultar la fuente de datos.
