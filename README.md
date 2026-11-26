@@ -88,3 +88,13 @@ TaskFlow maneja cuatro estados asíncronos en la pantalla principal (`TaskListSc
    - **UI**: Muestra el mensaje *"Todavía no hay tareas para mostrar."* centrado junto a un botón **"Actualizar"**.
    - **Cómo provocarlo**: Consultando un `userId` que no tenga tareas asignadas o configurando una lista vacía `[]` en el repositorio.
    - **Recuperación**: Presionar el botón **"Actualizar"** vuelve a consultar la fuente de datos.
+
+## Formulario de Tareas y Selección de Fecha
+
+Se ha implementado la pantalla `TaskFormScreen` accesible mediante el botón flotante `+ Nueva tarea` (`/new`):
+
+- **Modelo de borrador (`TaskDraft`)**: Almacena de forma temporal los datos ingresados: `title`, `description`, `priority` y `dueDate` (opcional).
+- **Validaciones personalizadas**:
+  - `title`: Requerido. Muestra *"Por favor, ingresa un título para la tarea."* si está vacío, o *"El título debe tener al menos 3 caracteres."* si tiene menos de 3 letras.
+- **Selector de fecha (`showDatePicker`)**: Permite seleccionar una fecha límite opcional mediante un calendario nativo. Si no se selecciona ninguna fecha, el borrador mantiene `dueDate = null` y se guarda con la etiqueta `"Sin fecha límite"`.
+- **Retorno de datos**: Al presionar **"Guardar borrador"**, se ejecuta `context.pop(draft)` devolviendo el borrador a `TaskListScreen`, la cual muestra una notificación flotante (`SnackBar`) con el título y la fecha límite seleccionada.
